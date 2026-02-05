@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Call Testing - AI Calling Agent</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        .message {
+            animation: slideIn 0.2s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pulse-ring {
+            position: relative;
+        }
+
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: inherit;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-100 font-sans antialiased h-screen overflow-hidden flex">
+
+    <!-- Sidebar (Fixed) -->
+    <aside class="w-64 bg-gray-900 border-r border-gray-800 flex flex-col flex-shrink-0 z-20">
+        <div class="h-16 flex items-center px-6 border-b border-gray-800">
+            <span
+                class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">AI
+                Agent</span>
+        </div>
+
+        <nav class="flex-1 py-4 space-y-1 overflow-y-auto">
+            <a href="index.html"
+                class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="campaigns.html"
+                class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                </svg>
+                Campaigns
+            </a>
+            <a href="logs.html"
+                class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+                Call Logs
+            </a>
+            <a href="live-test.html"
+                class="flex items-center px-6 py-3 text-white bg-gray-800 border-r-2 border-blue-500">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Live Testing
+            </a>
+            <a href="test-features.html"
+                class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                Voice Test
+            </a>
+            <a href="settings.html"
+                class="flex items-center px-6 py-3 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Settings
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content (Split View) -->
+    <main class="flex-1 flex overflow-hidden bg-gray-900">
+
+        <!-- Left Panel: Agent Configuration -->
+        <div class="w-96 border-r border-gray-800 flex flex-col bg-gray-900 overflow-y-auto">
+            <div class="p-6 border-b border-gray-800">
+                <h2 class="text-lg font-semibold text-white">Agent Configuration</h2>
+                <p class="text-xs text-gray-500 mt-1">Configure your agent's personality and voice.</p>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <!-- System Prompt -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">System Prompt</label>
+                    <textarea id="systemPrompt" rows="12"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500 transition-colors resize-none"
+                        placeholder="You are a helpful AI assistant...">You are a helpful AI assistant speaking with a customer over the phone. Be concise and natural.</textarea>
+                </div>
+
+                <!-- Voice Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Voice (Telnyx TTS)</label>
+                    <select id="voiceSelect"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500">
+                        <optgroup label="🎤 AWS Polly (Recommended)">
+                            <option value="AWS.Polly.Joanna-Neural" selected>Joanna - Female, US English</option>
+                            <option value="AWS.Polly.Matthew-Neural">Matthew - Male, US English</option>
+                            <option value="AWS.Polly.Amy-Neural">Amy - Female, British English</option>
+                            <option value="AWS.Polly.Brian-Neural">Brian - Male, British English</option>
+                            <option value="AWS.Polly.Nicole-Neural">Nicole - Female, Australian English</option>
+                            <option value="AWS.Polly.Russell-Neural">Russell - Male, Australian English</option>
+                        </optgroup>
+                        <optgroup label="🎙️ Azure Speech (High Quality)">
+                            <option value="Azure.en-US-AvaMultilingualNeural">Ava - Female, US English</option>
+                            <option value="Azure.en-US-AndrewMultilingualNeural">Andrew - Male, US English</option>
+                            <option value="Azure.en-GB-SoniaNeural">Sonia - Female, British English</option>
+                            <option value="Azure.en-GB-RyanNeural">Ryan - Male, British English</option>
+                            <option value="Azure.en-AU-NatashaNeural">Natasha - Female, Australian English</option>
+                        </optgroup>
+                        <optgroup label="⭐ ElevenLabs (Premium)">
+                            <option value="ElevenLabs.eleven_multilingual_v2.Rachel">Rachel - Female, Natural</option>
+                            <option value="ElevenLabs.eleven_multilingual_v2.Adam">Adam - Male, Deep</option>
+                            <option value="ElevenLabs.eleven_multilingual_v2.Bella">Bella - Female, Soft</option>
+                        </optgroup>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-2">💡 AWS Polly offers best value. ElevenLabs for premium
+                        quality.</p>
+                </div>
+
+                <!-- Model Selection -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Model</label>
+                    <select id="modelSelect"
+                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white text-sm focus:outline-none focus:border-blue-500">
+                        <option value="gpt-4-turbo-preview">GPT-4 Turbo</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Interaction -->
+        <div class="flex-1 flex flex-col bg-gray-950">
+
+            <!-- Top Bar: Test Call Controls -->
+            <div class="h-20 border-b border-gray-800 flex items-center justify-between px-8 bg-gray-900">
+                <div class="flex items-center space-x-4">
+                    <div class="flex flex-col">
+                        <label class="text-xs text-gray-500 uppercase tracking-wider font-semibold">To Number</label>
+                        <input type="tel" id="phoneNumber"
+                            class="bg-transparent border-none text-white font-mono focus:ring-0 p-0 w-40"
+                            placeholder="+1234567890">
+                    </div>
+                    <div class="h-8 w-px bg-gray-700"></div>
+                    <div class="flex flex-col">
+                        <label class="text-xs text-gray-500 uppercase tracking-wider font-semibold">From Number</label>
+                        <input type="tel" id="fromNumber"
+                            class="bg-transparent border-none text-white font-mono focus:ring-0 p-0 w-40"
+                            placeholder="+1987654321">
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div id="callStatusContainer"
+                        class="hidden flex items-center space-x-2 px-3 py-1 rounded-full bg-gray-800 border border-gray-700">
+                        <span id="callStatus"
+                            class="status-badge status-idle text-xs font-medium text-gray-300">Idle</span>
+                        <span id="callDuration" class="text-xs font-mono text-gray-400">00:00</span>
+                    </div>
+
+                    <button id="startCallBtn"
+                        class="bg-white text-black hover:bg-gray-200 font-semibold py-2 px-6 rounded-full transition-all flex items-center shadow-lg transform hover:scale-105">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                        <span id="startBtnText">Start Test Call</span>
+                    </button>
+
+                    <button id="hangupBtn" disabled
+                        class="bg-red-500/10 text-red-500 hover:bg-red-500/20 font-semibold py-2 px-4 rounded-full transition-all opacity-50 cursor-not-allowed border border-red-500/50">
+                        Hang Up
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Transcript Area -->
+            <div class="flex-1 overflow-y-auto p-8 space-y-6" id="messagesContainer">
+                <div class="flex flex-col items-center justify-center h-full text-gray-600 space-y-4">
+                    <div class="w-16 h-16 rounded-full bg-gray-800 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </div>
+                    <p class="text-lg font-medium">Ready to test your agent</p>
+                    <p class="text-sm max-w-md text-center">Enter your phone number above and click "Start Test Call" to
+                        initiate a call to your device.</p>
+                </div>
+            </div>
+
+            <!-- Bottom Analytics Bar -->
+            <div class="h-16 bg-gray-900 border-t border-gray-800 flex items-center px-8 justify-between">
+                <div class="flex space-x-8">
+                    <div>
+                        <span class="text-xs text-gray-500 block">Messages</span>
+                        <span id="messageCount" class="text-sm font-mono text-white">0</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-500 block">Avg Response</span>
+                        <span id="avgResponseTime" class="text-sm font-mono text-white">-</span>
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-500 block">Est. Cost</span>
+                        <span id="estimatedCost" class="text-sm font-mono text-white">$0.00</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-gray-500">Call ID:</span>
+                    <span id="currentCallId" class="text-xs font-mono text-gray-400">-</span>
+                </div>
+            </div>
+
+            <div id="statusMessage" class="absolute bottom-20 right-8"></div>
+        </div>
+    </main>
+
+    <script src="live-test.js"></script>
+</body>
+
+</html>

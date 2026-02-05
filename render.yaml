@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: ai-calling-agent
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: TELNYX_API_KEY
+        sync: false
+      - key: TELNYX_CONNECTION_ID
+        sync: false
+      - key: TELNYX_PHONE_NUMBER
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: ai-agent-redis
+          property: connectionString
+
+  - type: redis
+    name: ai-agent-redis
+    plan: free
+    ipAllowList: [] # Access only from within Render

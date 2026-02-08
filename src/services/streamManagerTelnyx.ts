@@ -1,17 +1,18 @@
 import { WebSocket } from 'ws';
 import { TelnyxConversationalAI } from './telnyxConversationalAI';
-import { OpenAIService } from './openai';
+import { TelnyxLLMService } from './telnyxLLM';
 import { SupabaseService } from './supabase';
 
 /**
  * StreamManager for 100% Telnyx Implementation
  * Uses Telnyx Conversational AI for STT + TTS
+ * Uses Telnyx Inference for LLM
  */
 export class StreamManagerTelnyx {
     private ws: WebSocket;
     private streamSid: string;
     private telnyxAI: TelnyxConversationalAI;
-    private openai: OpenAIService;
+    private telnyxLLM: TelnyxLLMService;
     private supabase: SupabaseService;
     private isSpeaking: boolean = false;
     private callHistory: any[] = [];
@@ -25,7 +26,7 @@ export class StreamManagerTelnyx {
 
         // Initialize Services (Telnyx only)
         this.telnyxAI = new TelnyxConversationalAI();
-        this.openai = new OpenAIService();
+        this.telnyxLLM = new TelnyxLLMService();
         this.supabase = new SupabaseService();
 
         this.setupEventHandlers();
@@ -56,12 +57,12 @@ export class StreamManagerTelnyx {
         });
 
         // 2. LLM Events
-        this.openai.on('token', (text) => {
+        this.telnyxLLM.on('token', (text) => {
             // Stream text to Telnyx TTS
             this.telnyxAI.sendText(text);
         });
 
-        this.openai.on('complete', async (fullText) => {
+        this.telnyxLLM.on('complete', async (fullText) => {
             console.log(`AI: ${fullText}`);
             this.callHistory.push({ role: 'assistant', content: fullText });
 
@@ -123,16 +124,15 @@ export class StreamManagerTelnyx {
 
     public handleAudio(payload: string) {
         // Payload is base64 from Telnyx Media Stream
-        const audioBuffer = Buffer.from(payload, 'base64');
-
         // Send to Telnyx Conversational AI for STT
+        const audioBuffer = Buffer.from(payload, 'base64');
         this.telnyxAI.sendAudio(audioBuffer);
     }
 
     private async processUserMessage(text: string) {
         this.callHistory.push({ role: 'user', content: text });
         const systemPrompt = "You are a helpful, fast, and friendly AI voice assistant. Keep responses concise and conversational.";
-        await this.openai.generateResponse(systemPrompt, text, this.callHistory);
+        await this.telnyxLLM.generateResponse(systemPrompt, text, this.callHistory);
     }
 
     private async processSystemMessage(text: string) {
@@ -185,9 +185,9 @@ export class StreamManagerTelnyx {
                 .map(msg => `${msg.role}: ${msg.content}`)
                 .join('\n');
 
-            // Use LLM to generate summary
+            // Use Telnyx LLM to generate summary
             const summaryPrompt = `Summarize this call conversation and extract key information:\n\n${transcript}`;
-            const summary = await this.openai.generateSummary(summaryPrompt);
+            const summary = await this.telnyxLLM.generateSummary(summaryPrompt);
 
             // Save to Supabase
             if (this.callId) {
@@ -195,8 +195,8 @@ export class StreamManagerTelnyx {
                     call_id: this.callId,
                     transcript,
                     summary,
-                    sentiment: 'neutral', // Can be enhanced with sentiment analysis
-                    lead_score: 0, // Can be enhanced with scoring logic
+                    sentiment: 'neutral',
+                    lead_score: 0,
                     action_items: [],
                     extracted_data: {}
                 });

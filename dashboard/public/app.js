@@ -14,7 +14,7 @@ async function makeCall() {
 
     // UI Loading State
     callBtn.disabled = true;
-    callStatus.textContent = 'Initiating call...';
+    callStatus.textContent = 'Initiating call via SignalWire...';
     callStatus.className = 'call-status loading';
 
     try {
@@ -25,15 +25,14 @@ async function makeCall() {
             },
             body: JSON.stringify({
                 to: to,
-                from: localStorage.getItem('phone_number') || '+1987654321',
-                organization_id: localStorage.getItem('org_id') || '17170ec5-ac80-4dbf-a293-7825caa3ca70'
+                from: localStorage.getItem('phone_number') || '+1987654321'
             })
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            callStatus.textContent = `Call initiated! ID: ${data.call_id}`;
+            callStatus.textContent = `Call initiated! ${data.call_data?.callId ? 'ID: ' + data.call_data.callId : ''}`;
             callStatus.className = 'call-status success';
             phoneInput.value = '';
         } else {

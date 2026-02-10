@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Testing - SignalWire Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>AI Calling Agent</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-label">Menu</span>
+                <a href="index.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Dashboard</span>
+                </a>
+                <a href="agents.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>AI Agents</span>
+                </a>
+                <a href="dialer.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
+                        </path>
+                    </svg>
+                    <span>Dialer</span>
+                </a>
+                <a href="campaigns.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Campaigns</span>
+                </a>
+                <a href="testing.html" class="nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                    </svg>
+                    <span>Model Testing</span>
+                </a>
+                <a href="logs.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    <span>Call Logs</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="header-left">
+                <h1>Model Testing</h1>
+            </div>
+        </header>
+
+        <div class="content">
+            <!-- Testing Interface -->
+            <div class="stats-grid" style="grid-template-columns: 1fr 1fr;">
+                <!-- Input Panel -->
+                <div class="stat-card" style="grid-column: 1;">
+                    <h3>Test Configuration</h3>
+                    <div style="margin-top: 16px;">
+                        <div class="form-group">
+                            <label>Select Agent</label>
+                            <select id="test-agent" class="dialer-input">
+                                <option value="">Loading agents...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Test Input (Text)</label>
+                            <textarea id="test-input" class="dialer-input" rows="4"
+                                placeholder="Type your test message here..."></textarea>
+                        </div>
+                        <button class="btn-primary" onclick="runTest()" style="width: 100%;">Run Test</button>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="stat-card" style="grid-column: 2;">
+                    <h3>Test Results</h3>
+                    <div id="test-output" style="margin-top: 16px; min-height: 200px;">
+                        <div style="color: var(--text-secondary); text-align: center; padding: 48px;">
+                            Run a test to see results
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test History -->
+            <div class="stats-grid" style="margin-top: 32px;">
+                <div class="stat-card" style="grid-column: 1 / -1;">
+                    <h3>Test History</h3>
+                    <div id="test-history" style="margin-top: 16px;">
+                        <div style="color: var(--text-secondary); text-align: center; padding: 24px;">
+                            No tests run yet
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let testHistory = [];
+
+        // Load agents
+        async function loadAgents() {
+            try {
+                const response = await fetch('/api/agents');
+                const agents = await response.json();
+                const select = document.getElementById('test-agent');
+                select.innerHTML = agents.map(agent =>
+                    `<option value="${agent.id}">${agent.name}</option>`
+                ).join('');
+            } catch (error) {
+                console.error('Error loading agents:', error);
+                document.getElementById('test-agent').innerHTML = '<option value="">No agents available</option>';
+            }
+        }
+
+        async function runTest() {
+            const agentId = document.getElementById('test-agent').value;
+            const input = document.getElementById('test-input').value;
+            const output = document.getElementById('test-output');
+
+            if (!agentId || !input) {
+                alert('Please select an agent and enter test input');
+                return;
+            }
+
+            output.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 48px;">Processing...</div>';
+
+            try {
+                // Simulate API call (replace with actual endpoint)
+                const response = await fetch('/api/test/agent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ agentId, input })
+                });
+
+                const result = await response.json();
+
+                // Display result
+                output.innerHTML = `
+                    <div style="padding: 16px; background: var(--card-bg); border-radius: 8px;">
+                        <div style="margin-bottom: 12px;">
+                            <strong>Response:</strong>
+                        </div>
+                        <div style="color: var(--text-secondary); line-height: 1.6;">
+                            ${result.response || 'No response generated'}
+                        </div>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color); font-size: 14px; color: var(--text-secondary);">
+                            <div>Latency: ${result.latency || 'N/A'}ms</div>
+                            <div>Tokens: ${result.tokens || 'N/A'}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Add to history
+                testHistory.unshift({
+                    timestamp: new Date().toISOString(),
+                    input,
+                    output: result.response,
+                    agentId
+                });
+                renderHistory();
+            } catch (error) {
+                output.innerHTML = `
+                    <div style="padding: 16px; background: rgba(239, 68, 68, 0.1); border-radius: 8px; color: #ef4444;">
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('test-history');
+            if (testHistory.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 24px;">No tests run yet</div>';
+                return;
+            }
+
+            container.innerHTML = testHistory.slice(0, 10).map(test => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border-color);">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong>${test.input.substring(0, 50)}${test.input.length > 50 ? '...' : ''}</strong>
+                        <span style="color: var(--text-secondary); font-size: 14px;">${new Date(test.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 14px;">
+                        ${test.output ? test.output.substring(0, 100) + '...' : 'No response'}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAgents();
+        });
+    </script>
+</body>
+
+</html>

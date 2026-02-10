@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export class SignalWireService {
-    private client: any;
+    private clientPromise: Promise<any>;
     private projectId: string;
     private apiToken: string;
     private spaceUrl: string;
@@ -18,8 +18,8 @@ export class SignalWireService {
             console.error('❌ Missing SignalWire credentials');
         }
 
-        // Initialize Realtime Client for Outbound Calls
-        this.client = new SignalWire({
+        // Initialize Realtime Client (returns a Promise)
+        this.clientPromise = SignalWire({
             project: this.projectId,
             token: this.apiToken
         });
@@ -63,34 +63,41 @@ export class SignalWireService {
         try {
             console.log(`📞 Initiating SignalWire call to ${to} from ${from}`);
 
-            // For outbound calls connected to an AI Agent, we typically dial the number
-            // and then connect it to the SWML document via a URL (webhook)
-            // OR we can use the 'dial' verb in SWML if the call direction is inverted.
+            const client = await this.clientPromise;
 
-            // However, the simplest way for an AI agent to *call out* is to use the API 
-            // to dial the user and then execute the SWML when they pick up.
+            // Use the Voice API to dial the phone number
+            // We connect the call to the webhook URL which serves the SWML
+            // Note: dialPhone connects the call to this client context, 
+            // but we want to transfer it to a SWML document usually.
+            // Using 'dialPhone' returns a Call object which we can control.
 
-            /* 
-            Note: The Realtime SDK 'dial' method is powerful but for a simple SWML trigger, 
-            using the REST API (via fetch or axios) might be simpler if the Realtime SDK 
-            requires a persistent connection listener. 
-            
-            But we installed @signalwire/realtime-api, so let's use its capabilities or fall back to HTTP 
-            if we want a stateless triggers.
-            */
+            // However, typical pattern for AI Agent is:
+            // 1. Dial -> 2. Execute SWML
 
-            // SignalWire Dialing Logic (Conceptual - Realtime API varies by version)
-            // Using a standard REST trigger pattern is often more robust for "fire and forget" calls.
+            // Let's try dialPhone first.
+            const call = await client.voice.dialPhone({
+                from: from,
+                to: to,
+                timeout: 30,
+            });
 
-            // Construct the SWML URL (this server's endpoint)
-            // Ensure this server is reachable publicly (e.g. Render URL)
-            // const url = \`https://\${this.spaceUrl}/api/laml/2010-04-01/Accounts/\${this.projectId}/Calls.json\`;
+            console.log('✅ Call connected:', call.id);
 
-            // For now, let's assume the caller of this service will handle the API request 
-            // or we use a basic fetch here if the SDK setup is complex for a simple dial.
+            // Once connected, we can play TTS or just rely on the SWML if we were using a different method.
+            // But here, we might need to instruct the call.
+            // If we want to use the webhookUrl, we might need a different method or rely on 
+            // the inbound handling logic if this was an incoming call.
 
-            console.log('✅ Call instruction sent (Mock for implementation phase)');
-            return { success: true, message: "Call initiated" };
+            // For OUTBOUND calls to use SWML, you often need to Transfer the call to a script 
+            // or use LAML (REST API). Realtime API is more for controlling the call via code directly.
+
+            // Since we built 'generateSwml', we probably want to execute that SWML.
+            // We can try to play TTS immediately for now to verify connectivity.
+            // Or better, we can use the 'prompt' method if available.
+
+            // For now, let's keep it simple: Dial and Log.
+
+            return { success: true, message: "Call initiated", callId: call.id };
 
         } catch (error) {
             console.error('❌ Error making SignalWire call:', error);
